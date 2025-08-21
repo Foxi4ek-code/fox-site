@@ -1,0 +1,32 @@
+[
+  {
+    "image": "products/HC72552-11.jpg",
+    "name": "Обои Palitra HC72552-11",
+    "description": "Коллекция Ultrachrome 3",
+    "price": 3000
+  },
+  {
+    "image": "products/FM72511-74.jpg",
+    "name": "Обои Palitra FM72511-74",
+    "description": "Коллекция Malma",
+    "price": 2990
+  },
+  {
+    "image": "products/PL72518-24.jpg",
+    "name": "Обои Palitra PL72518-24",
+    "description": "Коллекция Cross",
+    "price": 3700
+  },
+  {
+    "image": "products/PL72545-24.jpg",
+    "name": "Обои Palitra PL72545-24",
+    "description": "Коллекция Grand",
+    "price": 3000
+  },
+  {
+    "image": "products/PL72417-14.jpg",
+    "name": "Обои Palitra PL72417-14",
+    "description": "Коллекция Outline",
+    "price": 2800
+  }
+]

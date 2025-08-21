@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Интернет-магазин Дом обоев</title>
+        <link rel="stylesheet" href="styles.css">
+    </head>
+    <body>
+        <header>
+            <a href="#" class="logo-link">
+                <img src="logo.webp" alt="Дом обоев" class="logo">
+            </a>
+            <nav class="menu-container">
+                <ul>
+                    <li><a href="#home">Главная</a></li>
+                    <li><a href="#products">Товары</a></li>
+                    <li><a href="#contact">Контакты</a></li>
+                </ul>
+            </nav>
+        </header>
+        <main>
+            <section id="home">
+                <h2 id="head">Добро пожаловать в "Дом обоев"!</h2>
+                <img src="mag.webp" alt="Вид нашего магазина" class="store-image">
+                <p id="desc_head">Мы предлагаем широкий выбор качественных обоев для создания уютного и стильного интерьера в вашем доме. В нашем магазине вы найдете обои на любой вкус и кошелек. Мы работаем только с проверенными поставщиками и гарантируем высокое качество нашей продукции.</p>
+
+                <div class="advantages">
+                    <div class="advantage">
+                        <h3>Широкий ассортимент</h3>
+                        <p>В нашем каталоге представлено более 1000 видов обоев различных цветов, фактур и стилей.</p>
+                    </div>
+                    <div class="advantage">
+                        <h3>Выгодные цены</h3>
+                        <p>Мы предлагаем конкурентные цены и регулярные скидки на самые популярные коллекции.</p>
+                    </div>
+                    <div class="advantage">
+                        <h3>Быстрая доставка</h3>
+                        <p>Мы осуществляем быструю доставку по всей стране. Возможен самовывоз из нашего магазина.</p>
+                    </div>
+                </div>
+            </section>
+            <section id="products">
+                <h2 id="product">Наши товары</h2>
+                <div class="products-container">
+                </div>
+            </section>
+            <section id="contact">
+                <h2 id="contacts">Контакты</h2>
+                <form id="contact-form">
+                    <label for="name">Имя:</label>
+                    <input type="text" id="name" name="name" required>
+                    
+                    <label for="email">Email:</label>
+                    <input type="email" id="email" name="email" required>
+                    
+                    <label for="message">Сообщение:</label>
+                    <textarea id="message" name="message" required></textarea>
+                    
+                    <button type="submit">Отправить</button>
+                </form>
+
+                <script src="https://cdn.emailjs.com/dist/email.min.js"></script>
+                <script>
+                    (function(){
+                        emailjs.init("lx6Wh_rvJuF5DI6_P");
+                    })();
+
+                    document.getElementById('contact-form').addEventListener('submit', function(event) {
+                        event.preventDefault();
+
+                        const form = this; // Сохраняем ссылку на форму
+
+                        emailjs.sendForm('service_kp6t6b9', 'template_zm02zvf', this)
+                            .then(function() {
+                                alert('Сообщение отправлено!');
+                                form.reset(); // Очищаем поля формы
+                            }, function(error) {
+                                alert('Ошибка: ' + JSON.stringify(error));
+                            });
+                    });
+                </script>
+            </section>
+        </main>
+        <footer>
+            <p>&copy; 2025 Интернет-магазин. Все права защищены.</p>
+        </footer>
+        
+        <button class="cart-button"></button>
+
+        <div class="cart">
+            <div class="cart-header">
+                <h4>Корзина</h4>
+                <button class="cart-close-button">&times;</button>
+            </div>
+            <div class="cart-items">
+        <!-- Элементы корзины будут добавлены сюда -->
+            </div>
+            <div class="cart-footer">
+                <p id="total">Итого: 0 руб</p>
+                <button class="checkout-button">Оформить заказ • 0 руб</button>
+            </div>
+        </div>
+
+
+        <script>
+            let cart = [];
+            const cartItemsContainer = document.querySelector('.cart-items');
+            const totalElement = document.getElementById('total');
+            const cartElement = document.querySelector('.cart');
+            const cartButton = document.querySelector('.cart-button');
+            const cartCloseButton = document.querySelector('.cart-close-button');
+            const checkoutButton = document.querySelector('.checkout-button');
+            const productsContainer = document.querySelector('.products-container');
+
+            function updateCart() {
+                cartItemsContainer.innerHTML = '';
+
+                cart.forEach(item => {
+                    const itemElement = document.createElement('div');
+                    itemElement.classList.add('cart-item');
+                    itemElement.innerHTML = `
+                        <div class="cart-item-details">
+                            <span>${item.name}</span><br>
+                            <span>${item.price} руб</span>
+                        </div>
+                        <div class="quantity-controls">
+                            <button class="quantity-button minus" data-name="${item.name}">–</button>
+                            <span class="quantity">${item.quantity}</span>
+                            <button class="quantity-button plus" data-name="${item.name}">+</button>
+                        </div>
+                        - ${(item.price * item.quantity).toFixed(2)} руб
+                    `;
+                    cartItemsContainer.appendChild(itemElement);
+                });
+
+                const total = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+                totalElement.textContent = `Итого: ${total.toFixed(2)} руб`;
+                checkoutButton.textContent = `Оформить заказ • ${total.toFixed(2)} руб`;
+
+                totalElement.style.display = cart.length > 0 ? 'block' : 'none';
+
+                // Add event listeners to quantity buttons
+                cartItemsContainer.querySelectorAll('.quantity-button').forEach(button => {
+                    button.addEventListener('click', e => {
+                        const name = button.dataset.name;
+
+                        if (button.classList.contains('plus')) {
+                            addToCart(name, cart.find(i => i.name === name).price);
+                        } else if (button.classList.contains('minus')) {
+                            removeFromCart(name);
+                        }
+                    });
+                });
+            }
+
+            function addToCart(productName, productPrice) {
+                const item = cart.find(i => i.name === productName);
+                if (item) {
+                    item.quantity++;
+                } else {
+                    cart.push({ name: productName, price: productPrice, quantity: 1 });
+                }
+                updateCart();
+                updateProductQuantityOnPage(productName);
+            }
+
+            function removeFromCart(productName) {
+                const item = cart.find(i => i.name === productName);
+                if (item && item.quantity > 0) {
+                    item.quantity--;
+                    if (item.quantity === 0) {
+                        cart = cart.filter(i => i.name !== productName);
+                    }
+                }
+                updateCart();
+                updateProductQuantityOnPage(productName);
+            }
+
+            function updateProductQuantityOnPage(productName) {
+                const productElement = Array.from(productsContainer.children).find(product => 
+                    product.querySelector('.add-to-cart').dataset.name === productName
+                );
+                
+                if (productElement) {
+                    const qtyElement = productElement.querySelector('.quantity');
+                    const item = cart.find(i => i.name === productName);
+                    qtyElement.textContent = item ? item.quantity : 0;
+                }
+            }
+            
+            cartButton.addEventListener('click', () => {
+                cartElement.classList.add('open');
+            });
+            
+            cartCloseButton.addEventListener('click', () => {
+                cartElement.classList.remove('open');
+            });
+
+            async function loadProducts() {
+                try {
+                    const response = await fetch('products.json');
+                    if (!response.ok) {
+                        throw new Error(`HTTP error! status: ${response.status}`);
+                    }
+                    const productsData = await response.json();
+
+                    productsData.forEach(productData => {
+                        const productElement = document.createElement('div');
+                        productElement.classList.add('product');
+                        productElement.innerHTML = `
+                            <img src="${productData.image}" loading="lazy">
+                            <h3 class="prod_name">${productData.name}</h3>
+                            <p class="desc_prod">${productData.description}</p>
+                            <p class="cost">${productData.price} руб</p>
+                            
+                            <div class="add-to-cart" data-name="${productData.name}" data-price="${productData.price}">
+                                <button class="minus" data-name="${productData.name}">–</button>
+                                <span class="quantity">0</span>
+                                <button class="plus" data-name="${productData.name}">+</button>
+                            </div>
+                        `;
+                        productsContainer.appendChild(productElement);
+                    });
+
+                    productsContainer.addEventListener('click', e => {
+                        const productCard = e.target.closest('.product');
+                        if (!productCard) return;
+
+                        const addToCartDiv = productCard.querySelector('.add-to-cart');
+                        if (!addToCartDiv) return;  // Add this check
+                        const name = addToCartDiv.dataset.name;
+                        const price = +addToCartDiv.dataset.price;
+                        
+                        if (e.target.classList.contains('plus')) {
+                            addToCart(name, price);
+                        } else if (e.target.classList.contains('minus')) {
+                            removeFromCart(name);
+                        }
+                    });
+                } catch (error) {
+                    console.error('Ошибка загрузки данных:', error);
+                    productsContainer.textContent = 'Не удалось загрузить товары. Проверьте консоль для деталей.';
+                }
+            }
+
+            loadProducts();
+        </script>
+    </body>
+</html>
